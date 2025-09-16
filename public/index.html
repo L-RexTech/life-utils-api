@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Utils API - Because Adulting is Hard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .api-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .api-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .api-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .api-card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .wake-up-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .wake-up-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .api-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Life Utils API</h1>
+            <p>Because adulting is hard and APIs should be honest about it</p>
+        </div>
+
+        <div class="api-grid">
+            <!-- Overthinking Detector -->
+            <div class="api-card">
+                <h3>🤯 Overthinking Detector</h3>
+                <p>Find out if you're overthinking that text message (spoiler: you probably are)</p>
+                <div class="input-group">
+                    <label>Your Message:</label>
+                    <textarea id="overthinkingText" placeholder="Type that message you've been analyzing for 20 minutes..." rows="3"></textarea>
+                </div>
+                <button class="btn" onclick="analyzeOverthinking()">Analyze My Overthinking</button>
+                <div id="overthinkingResult"></div>
+            </div>
+
+            <!-- Plant Death Detector -->
+            <div class="api-card">
+                <h3>🌱 Plant Death Detector</h3>
+                <p>Get a brutally honest assessment of your plant's will to live</p>
+                <div class="input-group">
+                    <label>Describe Your Plant:</label>
+                    <textarea id="plantDescription" placeholder="It's brown and crispy, but maybe it's just a phase?" rows="2"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Last Watered:</label>
+                    <input type="date" id="lastWatered">
+                </div>
+                <button class="btn" onclick="checkPlant()">Check Plant Status</button>
+                <div id="plantResult"></div>
+            </div>
+
+            <!-- Status Feelings -->
+            <div class="api-card">
+                <h3>🌡️ HTTP Status Feelings</h3>
+                <p>Convert your current life status to HTTP codes</p>
+                <div class="input-group">
+                    <label>Current Mood:</label>
+                    <select id="currentMood">
+                        <option value="">Random Status</option>
+                        <option value="great">Great</option>
+                        <option value="good">Good</option>
+                        <option value="okay">Okay</option>
+                        <option value="meh">Meh</option>
+                        <option value="tired">Tired</option>
+                        <option value="confused">Confused</option>
+                        <option value="anxious">Anxious</option>
+                        <option value="angry">Angry</option>
+                        <option value="sad">Sad</option>
+                        <option value="overwhelmed">Overwhelmed</option>
+                        <option value="broken">Broken</option>
+                        <option value="dead">Dead Inside</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="getStatusFeeling()">Get My HTTP Status</button>
+                <div id="statusResult"></div>
+            </div>
+
+            <!-- Procrastination Justifier -->
+            <div class="api-card">
+                <h3>⏰ Procrastination Justifier</h3>
+                <p>Get scientific-sounding reasons why delaying is actually smart</p>
+                <div class="input-group">
+                    <label>Task You're Avoiding:</label>
+                    <input type="text" id="procrastinationTask" placeholder="That thing you should have done yesterday...">
+                </div>
+                <div class="input-group">
+                    <label>Deadline:</label>
+                    <input type="date" id="taskDeadline">
+                </div>
+                <button class="btn" onclick="justifyProcrastination()">Justify My Procrastination</button>
+                <div id="procrastinationResult"></div>
+            </div>
+
+            <!-- Small Talk Emergency -->
+            <div class="api-card">
+                <h3>💬 Small Talk Emergency</h3>
+                <p>Never suffer through awkward silence again</p>
+                <div class="input-group">
+                    <label>Context:</label>
+                    <select id="talkContext">
+                        <option value="elevator">Elevator</option>
+                        <option value="coffee">Coffee Shop</option>
+                        <option value="weather">Weather Talk</option>
+                        <option value="work">Work</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Relationship:</label>
+                    <select id="talkRelationship">
+                        <option value="stranger">Stranger</option>
+                        <option value="acquaintance">Acquaintance</option>
+                        <option value="colleague">Colleague</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="getSmallTalk()">Generate Small Talk</button>
+                <div id="smallTalkResult"></div>
+            </div>
+
+            <!-- Bed Worthiness -->
+            <div class="api-card">
+                <h3>🛏️ Bed Worthiness Calculator</h3>
+                <p>Scientific analysis of whether today is worth getting up for</p>
+                <div class="input-group">
+                    <label>Weather:</label>
+                    <select id="bedWeather">
+                        <option value="sunny">Sunny</option>
+                        <option value="rainy">Rainy</option>
+                        <option value="cold">Cold</option>
+                        <option value="hot">Hot</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Mood:</label>
+                    <select id="bedMood">
+                        <option value="terrible">Terrible</option>
+                        <option value="meh">Meh</option>
+                        <option value="good">Good</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Energy Level:</label>
+                    <select id="bedEnergy">
+                        <option value="zero">Zero</option>
+                        <option value="low">Low</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="calculateBedWorthiness()">Calculate Bed Worthiness</button>
+                <div id="bedResult"></div>
+            </div>
+
+            <!-- Passive Aggressive Translator -->
+            <div class="api-card">
+                <h3>😊 Passive Aggressive Translator</h3>
+                <p>Convert your direct thoughts into corporate-friendly passive aggression</p>
+                <div class="input-group">
+                    <label>What You Really Want to Say:</label>
+                    <textarea id="passiveMessage" placeholder="This is completely broken and makes no sense!" rows="3"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Intensity Level:</label>
+                    <select id="passiveIntensity">
+                        <option value="low">Low (Subtle)</option>
+                        <option value="medium">Medium (Professional)</option>
+                        <option value="high">High (Corporate Overload)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="translatePassiveAggressive()">Translate to Corporate Speak</button>
+                <div id="passiveResult"></div>
+            </div>
+
+            <!-- Buzzword Bingo -->
+            <div class="api-card">
+                <h3>🎯 Buzzword Bingo</h3>
+                <p>Survive meetings with the power of corporate buzzword bingo</p>
+                <div class="input-group">
+                    <label>Card Size:</label>
+                    <select id="bingoSize">
+                        <option value="3">3x3 (Quick Meeting)</option>
+                        <option value="5">5x5 (Standard)</option>
+                        <option value="7">7x7 (All-Day Conference)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="generateBingo()">Generate Bingo Card</button>
+                <div id="bingoResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="wake-up-btn" onclick="wakeUpAPI()" title="Wake up the API (doesn't actually do anything but feels good)">
+        ☕
+    </button>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        function showLoading(elementId, apiType) {
+            const element = document.getElementById(elementId);
+            const sleepMessages = {
+                overthinking: [
+                    "Waking up the overthinking detector...",
+                    "The API is overthinking whether it should wake up...",
+                    "Currently analyzing if this request was necessary..."
+                ],
+                plant: [
+                    "Checking if the server plants are still alive...",
+                    "API went dormant like your succulent...",
+                    "Photosynthesizing some responses..."
+                ],
+                status: [
+                    "Converting human emotions to HTTP codes...",
+                    "Debugging your life status...",
+                    "Server is having an identity crisis too..."
+                ],
+                procrastination: [
+                    "API will start working... eventually...",
+                    "Currently procrastinating on your procrastination...",
+                    "Just five more minutes..."
+                ],
+                smalltalk: [
+                    "Preparing socially acceptable conversation starters...",
+                    "API is practicing small talk in the mirror...",
+                    "Calculating optimal awkwardness levels..."
+                ],
+                bed: [
+                    "API is still in bed, deciding if today is worth it...",
+                    "Calculating optimal snooze button presses...",
+                    "Contemplating the existential weight of getting up..."
+                ],
+                passive: [
+                    "The API will respond when it's ready, thanks...",
+                    "Currently translating direct communication into corporate speak...",
+                    "Finding the most diplomatic way to say what you really mean..."
+                ],
+                bingo: [
+                    "Synergizing enterprise solutions...",
+                    "Leveraging scalable paradigm shifts...",
+                    "The API is circling back on low-hanging fruit..."
+                ]
+            };
+            
+            const messages = sleepMessages[apiType] || sleepMessages.overthinking;
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            
+            element.innerHTML = `<div class="loading">${randomMessage}</div>`;
+        }
+
+        function showResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result"><pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+        }
+
+        async function analyzeOverthinking() {
+            const text = document.getElementById('overthinkingText').value;
+            if (!text) {
+                alert('Please enter a message to analyze!');
+                return;
+            }
+            
+            showLoading('overthinkingResult', 'overthinking');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/overthinking`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: text})
+                });
+                const result = await response.json();
+                showResult('overthinkingResult', result);
+            } catch (error) {
+                document.getElementById('overthinkingResult').innerHTML = 
+                    `<div class="result">API is having an existential crisis: ${error.message}</div>`;
+            }
+        }
+
+        async function checkPlant() {
+            const description = document.getElementById('plantDescription').value;
+            const lastWatered = document.getElementById('lastWatered').value;
+            
+            if (!description) {
+                alert('Please describe your plant!');
+                return;
+            }
+            
+            showLoading('plantResult', 'plant');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/plant-death-detector`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({description, lastWatered})
+                });
+                const result = await response.json();
+                showResult('plantResult', result);
+            } catch (error) {
+                document.getElementById('plantResult').innerHTML = 
+                    `<div class="result">API died like your plant: ${error.message}</div>`;
+            }
+        }
+
+        async function getStatusFeeling() {
+            const mood = document.getElementById('currentMood').value;
+            
+            showLoading('statusResult', 'status');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/status-feelings?mood=${mood}`);
+                const result = await response.json();
+                showResult('statusResult', result);
+            } catch (error) {
+                document.getElementById('statusResult').innerHTML = 
+                    `<div class="result">Status: 500 Internal Server Error - ${error.message}</div>`;
+            }
+        }
+
+        async function justifyProcrastination() {
+            const task = document.getElementById('procrastinationTask').value;
+            const deadline = document.getElementById('taskDeadline').value;
+            
+            showLoading('procrastinationResult', 'procrastination');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/procrastination-justify`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({task, deadline})
+                });
+                const result = await response.json();
+                showResult('procrastinationResult', result);
+            } catch (error) {
+                document.getElementById('procrastinationResult').innerHTML = 
+                    `<div class="result">API is procrastinating on responding: ${error.message}</div>`;
+            }
+        }
+
+        async function getSmallTalk() {
+            const context = document.getElementById('talkContext').value;
+            const relationship = document.getElementById('talkRelationship').value;
+            
+            showLoading('smallTalkResult', 'smalltalk');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/small-talk?context=${context}&relationship=${relationship}`);
+                const result = await response.json();
+                showResult('smallTalkResult', result);
+            } catch (error) {
+                document.getElementById('smallTalkResult').innerHTML = 
+                    `<div class="result">Awkward silence: ${error.message}</div>`;
+            }
+        }
+
+        async function calculateBedWorthiness() {
+            const weather = document.getElementById('bedWeather').value;
+            const mood = document.getElementById('bedMood').value;
+            const energy = document.getElementById('bedEnergy').value;
+            
+            showLoading('bedResult', 'bed');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/bed-worthiness?weather=${weather}&mood=${mood}&energy=${energy}`);
+                const result = await response.json();
+                showResult('bedResult', result);
+            } catch (error) {
+                document.getElementById('bedResult').innerHTML = 
+                    `<div class="result">API stayed in bed: ${error.message}</div>`;
+            }
+        }
+
+        async function translatePassiveAggressive() {
+            const message = document.getElementById('passiveMessage').value;
+            const intensity = document.getElementById('passiveIntensity').value;
+            
+            if (!message) {
+                alert('Please enter a message to translate!');
+                return;
+            }
+            
+            showLoading('passiveResult', 'passive');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/passive-aggressive`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message, intensity})
+                });
+                const result = await response.json();
+                showResult('passiveResult', result);
+            } catch (error) {
+                document.getElementById('passiveResult').innerHTML = 
+                    `<div class="result">I'm sure there's a perfectly reasonable explanation for this error: ${error.message}</div>`;
+            }
+        }
+
+        async function generateBingo() {
+            const cardSize = document.getElementById('bingoSize').value;
+            
+            showLoading('bingoResult', 'bingo');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/buzzword-bingo?cardSize=${cardSize}`);
+                const result = await response.json();
+                
+                // Create a nice visual bingo card
+                let bingoHTML = `<div class="result">
+                    <h4>Your Buzzword Bingo Card</h4>
+                    <p><em>${result.sleepMessage}</em></p>
+                    <div style="display: grid; grid-template-columns: repeat(${cardSize}, 1fr); gap: 5px; margin: 15px 0; max-width: 300px;">`;
+                
+                result.bingoCard.flat().forEach(word => {
+                    bingoHTML += `<div style="background: #f0f0f0; padding: 8px; text-align: center; border-radius: 4px; font-size: 12px; cursor: pointer;" onclick="this.style.background='#667eea'; this.style.color='white';">${word}</div>`;
+                });
+                
+                bingoHTML += `</div>
+                    <p><strong>Instructions:</strong> ${result.gameInstructions}</p>
+                    <p><strong>Bonus:</strong> ${result.bonusPoints}</p>
+                </div>`;
+                
+                document.getElementById('bingoResult').innerHTML = bingoHTML;
+            } catch (error) {
+                document.getElementById('bingoResult').innerHTML = 
+                    `<div class="result">Failed to leverage synergistic bingo solutions: ${error.message}</div>`;
+            }
+        }
+
+        async function wakeUpAPI() {
+            try {
+                const response = await fetch(`${API_BASE}/api/wake-up`);
+                const result = await response.json();
+                alert(`${result.message}\n\nActually did something: ${result.actuallyDidSomething}\nBut you feel better: ${result.butYouFeelBetter}`);
+            } catch (error) {
+                alert('API is too sleepy to even acknowledge your wake-up attempt');
+            }
+        }
+
+        // Add some personality to the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Random encouraging messages
+            const encouragements = [
+                "You're doing great! (Probably)",
+                "Today is a day that exists!",
+                "At least you're not debugging PHP",
+                "Coffee is a vegetable, right?",
+                "Your overthinking is very thorough"
+            ];
+            
+            setTimeout(() => {
+                const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
+                console.log(`🎉 ${randomEncouragement}`);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
